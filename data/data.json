@@ -1,0 +1,16 @@
+{
+  "single": [
+    {
+      "label": "やあん",
+      "path": "/images/single/ヤドン/やあん.PNG",
+      "category": "ヤドン"
+    }
+  ],
+  "multi": [
+    {
+      "label": "やあん",
+      "path": "/images/multi/ヤドン/やあん.PNG",
+      "category": "ヤドン"
+    }
+  ]
+}

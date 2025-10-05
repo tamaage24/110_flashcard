@@ -22,3 +22,9 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+public/data/data.json
+public/images/multi/*
+public/images/single/*
+public/images/old/*
+

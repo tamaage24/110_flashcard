@@ -4,9 +4,39 @@
       "label": "やあん",
       "path": "/images/single/ヤドン/やあん.PNG",
       "category": "ヤドン"
+    },
+    {
+      "label": "ライオン_オス",
+      "path": "/images/single/動物/ライオン_オス.png",
+      "category": "動物"
+    },
+    {
+      "label": "ライオン_メス",
+      "path": "/images/single/動物/ライオン_メス.png",
+      "category": "動物"
     }
   ],
   "multi": [
+    {
+      "label": "卵",
+      "path": "/images/multi/たまご/卵.png",
+      "category": "たまご"
+    },
+    {
+      "label": "割る",
+      "path": "/images/multi/たまご/割る.png",
+      "category": "たまご"
+    },
+    {
+      "label": "目玉焼き",
+      "path": "/images/multi/たまご/目玉焼き.png",
+      "category": "たまご"
+    },
+    {
+      "label": "卵焼き",
+      "path": "/images/multi/たまご/卵焼き.png",
+      "category": "たまご"
+    },
     {
       "label": "やあん",
       "path": "/images/multi/ヤドン/やあん.PNG",

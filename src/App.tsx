@@ -4,8 +4,8 @@ import { Home } from './pages/Home';
 import { End } from './pages/End';
 import SingleMode from './pages/SingleMode';
 import MultiMode from './pages/MultiMode';
-import { NumberMode } from './pages/NumberMode';
-import { CalcMode } from './pages/CalcMode';
+import NumberMode from './pages/NumberMode';
+import CalcMode from './pages/CalcMode';
 
 function App() {
   return (

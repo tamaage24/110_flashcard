@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 
 export interface CardProps {
   children: React.ReactNode;
@@ -15,15 +15,50 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   const [animation, setAnimation] = useState<string>('');
   const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [isHandlingEvent, setIsHandlingEvent] = useState(false); // ★ 処理中フラグを追加
   const cardRef = useRef<HTMLDivElement>(null);
+  
+  // アニメーション時間
+  const ANIMATION_DURATION = 300; 
 
-  // タップハンドラ
-  const handleTap = () => {
+  // 次のカードへ進む処理 (共通化)
+  const triggerNext = () => {
+    if (isHandlingEvent) return; // 処理中の場合は無視
+    
     if (onNext) {
-      setAnimation('fade-in');
-      setTimeout(() => setAnimation(''), 300);
+      setIsHandlingEvent(true); // フラグを立てる
+      setAnimation('fade-in'); // タップ時はフェード
       onNext();
+      
+      // アニメーション時間後にフラグをリセット
+      setTimeout(() => {
+        setAnimation('');
+        setIsHandlingEvent(false); // フラグを下ろす
+      }, ANIMATION_DURATION);
     }
+  };
+  
+  // 前のカードへ戻る処理 (共通化)
+  const triggerPrevious = (animationType: string = 'slide-right') => {
+    if (isHandlingEvent) return; // 処理中の場合は無視
+    
+    if (onPrevious) {
+      setIsHandlingEvent(true); // フラグを立てる
+      setAnimation(animationType);
+      onPrevious();
+      
+      // アニメーション時間後にフラグをリセット
+      setTimeout(() => {
+        setAnimation('');
+        setIsHandlingEvent(false); // フラグを下ろす
+      }, ANIMATION_DURATION);
+    }
+  };
+
+
+  // タップハンドラ（onNextを呼び出す）
+  const handleTap = () => {
+    triggerNext();
   };
 
   // タッチ開始
@@ -34,6 +69,7 @@ export const Card: React.FC<CardProps> = ({
   // タッチ終了（フリック判定）
   const handleTouchEnd = (e: React.TouchEvent) => {
     if (touchStart === null) return;
+    if (isHandlingEvent) return; // 処理中の場合は無視
 
     const touchEnd = e.changedTouches[0].clientX;
     const diff = touchStart - touchEnd;
@@ -42,22 +78,18 @@ export const Card: React.FC<CardProps> = ({
     if (Math.abs(diff) > minSwipeDistance) {
       if (diff > 0) {
         // 左フリック（次へ）
-        if (onNext) {
-          setAnimation('slide-left');
-          setTimeout(() => setAnimation(''), 300);
-          onNext();
-        }
+        triggerNext(); // triggerNextを呼び出す
       } else {
         // 右フリック（前へ）
-        if (onPrevious) {
-          setAnimation('slide-right');
-          setTimeout(() => setAnimation(''), 300);
-          onPrevious();
-        }
+        triggerPrevious('slide-right'); // triggerPreviousを呼び出す
       }
     } else {
       // フリックではない場合はタップとして扱う
-      handleTap();
+      // ここで handleTap() を呼び出すと、タッチとクリックで二重になる可能性があるため、
+      // タッチイベントの処理のみで完結させるために、フリックでない場合はタップとして triggerNext を直接呼び出します。
+      // ※ただし、onClickとの兼ね合いを考えると、ここでは何もせずonClickに任せるのが一般的ですが、
+      //   二重発火防止のため、タッチデバイスではここで処理を完結させます。
+      triggerNext(); 
     }
 
     setTouchStart(null);
@@ -65,7 +97,10 @@ export const Card: React.FC<CardProps> = ({
 
   // マウスイベント（PC用）
   const handleClick = (e: React.MouseEvent) => {
-    // タッチデバイスでない場合のみ処理
+    // タッチデバイスで onClick が発火しても、isHandlingEventでガードされるが、
+    // PCでのマウス操作の互換性を保つために、handleTapを呼び出します。
+    // Androidスマホ中心の仕様なので、ここではPCのマウスクリックでのみ有効になるように調整する手段もありますが、
+    // isHandlingEventでガードされているため、現状のままとします。
     if (e.detail > 0) { // マウスクリックの場合
       handleTap();
     }
